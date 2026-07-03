@@ -1,0 +1,133 @@
+# Auto-generated — node build/generate-cms-config.mjs
+backend:
+  name: github
+  repo: "Shahd-Abbara/lecture-site-engine"
+  branch: "main"
+
+local_backend: true
+
+site_url: "https://shahd-abbara.github.io/lecture-site-engine"
+display_url: "https://shahd-abbara.github.io/lecture-site-engine"
+
+media_folder: subjects/media/uploads
+public_folder: /subjects/media/uploads
+
+publish_mode: simple
+
+collections:
+  - name: "lectures_year_4_android_dev_fundamentals"
+    label: "أساسيات تطوير تطبيقات أندرويد (النظري الكامل) (Android Development Fundamentals (Full Theory)) — محاضرات"
+    label_singular: "محاضرة"
+    folder: "subjects/year-4/android-dev-fundamentals/lectures"
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    identifier_field: slug
+    summary: "{{slug}}"
+    fields:
+      - label: "اسم الملف"
+        name: slug
+        widget: string
+        meta: true
+        hint: "مثال: par1 أو par1-sec2"
+        pattern: ['^par\\d+(-sec\\d+)?$', "استخدم parN أو parN-secN"]
+      - label: "محتوى المحاضرة"
+        name: body
+        widget: markdown
+        hint: "اتبع SCHEMA.md"
+  - name: "settings_year_4_android_dev_fundamentals"
+    label: "أساسيات تطوير تطبيقات أندرويد (النظري الكامل) (Android Development Fundamentals (Full Theory)) — إعدادات"
+    files:
+      - label: Manifest
+        name: manifest
+        file: "subjects/year-4/android-dev-fundamentals/lectures/manifest.json"
+        fields:
+          - label: "الإعدادات"
+            name: settings
+            widget: object
+            fields:
+              - { label: "اسم المادة (عربي)", name: subjectName, widget: string }
+              - { label: "اسم المادة (إنجليزي)", name: subjectNameEn, widget: string }
+              - { label: "السنة الدراسية", name: year, widget: string, default: "2025-2026" }
+              - { label: "السنة (رقم)", name: academicYear, widget: number, value_type: int, min: 1, max: 5 }
+              - label: "الثيم"
+                name: theme
+                widget: select
+                default: amber-default
+                options:
+                  - { label: "ذهبي كلاسيكي — Classic Amber", value: "amber-default" }
+                  - { label: "زهري + أزرق — Pink & Blue", value: "kotlin-pink-blue" }
+                  - { label: "موف احترافي — Professional Purple", value: "software-purple" }
+                  - { label: "أزرق + لافندر — Blue & Lavender", value: "programming-blue-lavender" }
+                  - { label: "أخضر تيل — Teal Green", value: "parallel-teal" }
+                  - { label: "أرض GIS — GIS Earth", value: "gis-earth" }
+              - { label: "القسم", name: department, widget: string }
+          - { label: "عنوان الموقع", name: title, widget: string }
+          - { label: "العنوان الفرعي", name: subtitle, widget: string }
+          - label: "أيقونات المحاضرات"
+            name: lectureIcons
+            widget: list
+            field: { label: emoji, name: emoji, widget: string }
+          - label: "أيقونات Material"
+            name: lectureMatIcons
+            widget: list
+            field: { label: icon, name: icon, widget: string }
+  - name: "lectures_year_4_os_2_theory"
+    label: "نظم التشغيل 2 (النظري الكامل) (Operating Systems 2 (Full Theory)) — محاضرات"
+    label_singular: "محاضرة"
+    folder: "subjects/year-4/os-2-theory/lectures"
+    create: true
+    extension: md
+    format: frontmatter
+    slug: "{{slug}}"
+    identifier_field: slug
+    summary: "{{slug}}"
+    fields:
+      - label: "اسم الملف"
+        name: slug
+        widget: string
+        meta: true
+        hint: "مثال: par1 أو par1-sec2"
+        pattern: ['^par\\d+(-sec\\d+)?$', "استخدم parN أو parN-secN"]
+      - label: "محتوى المحاضرة"
+        name: body
+        widget: markdown
+        hint: "اتبع SCHEMA.md"
+  - name: "settings_year_4_os_2_theory"
+    label: "نظم التشغيل 2 (النظري الكامل) (Operating Systems 2 (Full Theory)) — إعدادات"
+    files:
+      - label: Manifest
+        name: manifest
+        file: "subjects/year-4/os-2-theory/lectures/manifest.json"
+        fields:
+          - label: "الإعدادات"
+            name: settings
+            widget: object
+            fields:
+              - { label: "اسم المادة (عربي)", name: subjectName, widget: string }
+              - { label: "اسم المادة (إنجليزي)", name: subjectNameEn, widget: string }
+              - { label: "السنة الدراسية", name: year, widget: string, default: "2025-2026" }
+              - { label: "السنة (رقم)", name: academicYear, widget: number, value_type: int, min: 1, max: 5 }
+              - label: "الثيم"
+                name: theme
+                widget: select
+                default: amber-default
+                options:
+                  - { label: "ذهبي كلاسيكي — Classic Amber", value: "amber-default" }
+                  - { label: "زهري + أزرق — Pink & Blue", value: "kotlin-pink-blue" }
+                  - { label: "موف احترافي — Professional Purple", value: "software-purple" }
+                  - { label: "أزرق + لافندر — Blue & Lavender", value: "programming-blue-lavender" }
+                  - { label: "أخضر تيل — Teal Green", value: "parallel-teal" }
+                  - { label: "أرض GIS — GIS Earth", value: "gis-earth" }
+              - { label: "القسم", name: department, widget: string }
+          - { label: "عنوان الموقع", name: title, widget: string }
+          - { label: "العنوان الفرعي", name: subtitle, widget: string }
+          - label: "أيقونات المحاضرات"
+            name: lectureIcons
+            widget: list
+            field: { label: emoji, name: emoji, widget: string }
+          - label: "أيقونات Material"
+            name: lectureMatIcons
+            widget: list
+            field: { label: icon, name: icon, widget: string }

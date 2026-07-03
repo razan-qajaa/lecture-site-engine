@@ -92,7 +92,7 @@ function renderHtml(subjects) {
 </head>
 <body>
   <h1>دلائل الدراسة التفاعلية</h1>
-  <p class="lead">اختر المادة للبدء</p>
+  <p class="lead">اختر المادة للبدء · <a href="./admin/">إدارة المحاضرات (CMS)</a></p>
   ${subjects.length ? yearSections : '<p class="empty">لا توجد مواد منشورة بعد.</p>'}
 </body>
 </html>`;

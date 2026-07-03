@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import { createParser } from '../parser/index.js';
 import { runSchemaChecks, formatIssues, hasErrors } from './lib/schema-checks.mjs';
 import { ensureSubjectScaffold } from './lib/scaffold-subject.mjs';
+import { normalizeLectureMd } from './lib/normalize-lecture-md.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -52,7 +53,7 @@ async function collectLectureFiles(subjectDir) {
 
 async function validateFile(filePath, parser) {
   const rel = path.relative(ENGINE_ROOT, filePath);
-  const text = await readFile(filePath, 'utf8');
+  const text = normalizeLectureMd(await readFile(filePath, 'utf8'));
   const issues = runSchemaChecks(text, rel);
 
   try {

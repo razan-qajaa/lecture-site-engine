@@ -184,7 +184,20 @@ Set in your brief:
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Decap CMS (رفع المحاضرات)
+
+واجهة ويب لرفع `parN.md` على GitHub بدون تعديل يدوي لـ `manifest.json`.
+
+```bash
+npm run cms:config          # توليد admin/config.yml من subjects/
+npx decap-server            # محلي — terminal منفصل
+# افتح dist/admin/ بعد npm run build
+```
+
+- **الرابط:** `/admin/` على GitHub Pages
+- **الإعداد:** [admin/README.md](admin/README.md) — GitHub OAuth proxy (مرة واحدة)
+- المحتوى يُحفظ بـ frontmatter — البناء يزيله تلقائياً قبل التحليل
+
 ## Future work
 
-- Decap CMS contributor UI (`admin/`)
 - Wire remaining legacy sites to shared engine

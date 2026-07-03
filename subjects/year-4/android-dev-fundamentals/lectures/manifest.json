@@ -1,0 +1,27 @@
+{
+  "settings": {
+    "subjectName": "أساسيات تطوير تطبيقات أندرويد (النظري الكامل)",
+    "subjectNameEn": "Android Development Fundamentals (Full Theory)",
+    "year": "2025-2026",
+    "academicYear": 4,
+    "theme": "kotlin-pink-blue",
+    "department": "نظري"
+  },
+  "title": "أساسيات تطوير تطبيقات أندرويد (النظري الكامل) — Android Development Fundamentals (Full Theory)",
+  "subtitle": "منصة أندرويد كوتلن Compose",
+  "files": [],
+  "lectureIcons": [
+    "📌",
+    "📖",
+    "💻",
+    "🎯",
+    "📝"
+  ],
+  "lectureMatIcons": [
+    "school",
+    "menu_book",
+    "code",
+    "quiz",
+    "description"
+  ]
+}

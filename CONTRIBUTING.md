@@ -19,6 +19,8 @@ Do **not** modify `parser/`, `renderer/`, `site-shell/`, or `build/` unless you 
 3. Use AI to produce `lectures/parN.md` following `SCHEMA.md`.
 4. Open a Pull Request to `main` — **Validate lectures** auto-syncs `manifest.json` from your new files.
 
+Or use **Decap CMS** at `/admin/` to upload lectures via the browser (see [admin/README.md](admin/README.md)).
+
 ## CI on Pull Request
 
 Workflow **Validate lectures** runs automatically:

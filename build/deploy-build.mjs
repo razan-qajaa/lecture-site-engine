@@ -68,11 +68,24 @@ async function main() {
     }
   }
 
+  const cms = spawnSync('node', ['build/generate-cms-config.mjs'], {
+    cwd: ENGINE_ROOT,
+    stdio: 'inherit',
+    env: { ...process.env },
+  });
+  if (cms.status !== 0) process.exit(1);
+
   const idx = spawnSync('node', ['build/generate-dist-index.mjs'], {
     cwd: ENGINE_ROOT,
     stdio: 'inherit',
   });
   if (idx.status !== 0) process.exit(1);
+
+  const admin = spawnSync('node', ['build/copy-admin.mjs'], {
+    cwd: ENGINE_ROOT,
+    stdio: 'inherit',
+  });
+  if (admin.status !== 0) process.exit(1);
 
   console.log('\n✓ Deploy build complete.');
 }
