@@ -45,6 +45,14 @@ export function subjectHasLectures(subjectRel) {
   return true;
 }
 
+/** True when subject has lectures/par*.md ready to build or validate. */
+export async function subjectHasBuildableLectures(subjectRel) {
+  const lecturesDir = path.join(subjectDir(subjectRel), 'lectures');
+  if (!existsSync(lecturesDir)) return false;
+  const files = await readdir(lecturesDir);
+  return files.some(f => /^par.+\.md$/i.test(f));
+}
+
 /** All subjects under year-1..year-5 that have lectures/ and at least one par*.md */
 export async function listAllSubjectsWithLectures() {
   /** @type {string[]} */
@@ -56,10 +64,7 @@ export async function listAllSubjectsWithLectures() {
     for (const ent of entries) {
       if (!ent.isDirectory() || ent.name === '_template' || ent.name.startsWith('.')) continue;
       const rel = `year-${y}/${ent.name}`;
-      const lecturesDir = path.join(yearDir, ent.name, 'lectures');
-      if (!existsSync(lecturesDir)) continue;
-      const files = await readdir(lecturesDir);
-      if (files.some(f => /^par.+\.md$/i.test(f))) found.push(rel);
+      if (await subjectHasBuildableLectures(rel)) found.push(rel);
     }
   }
   return found.sort();

@@ -14,18 +14,11 @@ import path from 'node:path';
 import {
   distDir,
   listAllSubjectsWithLectures,
+  subjectHasBuildableLectures,
 } from './lib/subject-paths.mjs';
+import { readSubjectsFromStdin } from './lib/read-subjects-stdin.mjs';
 
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-
-async function readSubjectsFromStdin() {
-  if (process.stdin.isTTY) return [];
-  const chunks = [];
-  for await (const c of process.stdin) chunks.push(c);
-  const text = Buffer.concat(chunks).toString('utf8').trim();
-  if (!text) return [];
-  return text.split('\n').map(s => s.trim()).filter(Boolean);
-}
 
 function runBuild(subject) {
   console.log(`\n=== Building ${subject} ===`);
@@ -49,7 +42,10 @@ async function main() {
     for (const s of await listAllSubjectsWithLectures()) toBuild.add(s);
   } else {
     const changed = await readSubjectsFromStdin();
-    for (const s of changed) toBuild.add(s);
+    for (const s of changed) {
+      if (await subjectHasBuildableLectures(s)) toBuild.add(s);
+      else console.log(`Skipping ${s} — no par*.md lectures yet`);
+    }
 
     // Fill missing from dist (subjects with lectures but no built site)
     for (const s of await listAllSubjectsWithLectures()) {

@@ -10,20 +10,19 @@
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { readSubjectsFromStdin } from './lib/read-subjects-stdin.mjs';
+import { subjectHasBuildableLectures } from './lib/subject-paths.mjs';
 const ENGINE_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-
-async function readSubjectsFromStdin() {
-  if (process.stdin.isTTY) return [];
-  const chunks = [];
-  for await (const c of process.stdin) chunks.push(c);
-  const text = Buffer.concat(chunks).toString('utf8').trim();
-  if (!text) return [];
-  return text.split('\n').map(s => s.trim()).filter(Boolean);
-}
 
 async function main() {
   const fromArgs = process.argv.slice(2).filter(a => !a.startsWith('-'));
-  const subjects = fromArgs.length ? fromArgs : await readSubjectsFromStdin();
+  const raw = fromArgs.length ? fromArgs : await readSubjectsFromStdin();
+
+  const subjects = [];
+  for (const s of raw) {
+    if (await subjectHasBuildableLectures(s)) subjects.push(s);
+    else console.log(`Skipping ${s} — no par*.md lectures yet`);
+  }
 
   if (!subjects.length) {
     console.log('No subject changes to validate.');
