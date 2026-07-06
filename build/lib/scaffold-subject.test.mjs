@@ -17,7 +17,7 @@ assert(parseParFilename('foo.md') === null, 'reject non-par');
 
 // Arabic section badges
 assert(defaultSectionBadge(1, 1) === 'المحاضرة ١ — جزء ١', 'arabic badge');
-assert(defaultSectionBadge(1, null) === null, 'no badge for whole lecture');
+assert(defaultSectionBadge(1, null) === 'المحاضرة ١', 'badge');
 assert(toArabicDigits(12) === '١٢', 'arabic digits');
 
 // sync new files with icons from manifest + section badges
@@ -32,7 +32,7 @@ assert(manifest.files[0].path === 'par1-sec1.md' && manifest.files[0].icon === '
 assert(manifest.files[1].path === 'par1-sec2.md' && manifest.files[1].icon === '⚙️', 'sec2 icon');
 assert(manifest.files[0].badge === 'المحاضرة ١ — جزء ١', 'sec1 badge');
 assert(manifest.files[1].num === 1 && manifest.files[2].num === 2, 'lecture nums');
-assert(manifest.files[2].badge === undefined, 'par2 no badge');
+assert(manifest.files[2].badge === 'المحاضرة ٢', 'par2  badge');
 
 // preserve existing entries (no icon overwrite)
 manifest.files[0].badge = 'Custom badge';
