@@ -67,7 +67,8 @@ export function toArabicDigits(n) {
 /** @param {number} num @param {number|null} sec */
 export function defaultSectionBadge(num, sec) {
   if (sec) return `المحاضرة ${toArabicDigits(num)} — جزء ${toArabicDigits(sec)}`;
-  return null;
+  return `المحاضرة ${toArabicDigits(num)}`;
+  return null;      
 }
 
 /**

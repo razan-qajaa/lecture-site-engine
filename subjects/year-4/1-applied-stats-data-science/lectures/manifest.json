@@ -10,7 +10,94 @@
   },
   "title": "برمجة منطقية (ذكاء اصطناعي) — applied-stats-data-science",
   "subtitle": "دليل دراسي تفاعلي",
-  "files": [],
+  "files": [
+    {
+      "path": "par1.md",
+      "num": 1,
+      "icon": "📌",
+      "matIcon": "school"
+    },
+    {
+      "path": "par2.md",
+      "num": 2,
+      "icon": "📖",
+      "matIcon": "menu_book"
+    },
+    {
+      "path": "par3.md",
+      "num": 3,
+      "icon": "💻",
+      "matIcon": "code"
+    },
+    {
+      "path": "par4.md",
+      "num": 4,
+      "icon": "🎯",
+      "matIcon": "quiz"
+    },
+    {
+      "path": "par5-sec1.md",
+      "num": 5,
+      "icon": "📝",
+      "matIcon": "description",
+      "badge": "المحاضرة ٥ — جزء ١"
+    },
+    {
+      "path": "par5-sec2.md",
+      "num": 5,
+      "icon": "📌",
+      "matIcon": "school",
+      "badge": "المحاضرة ٥ — جزء ٢"
+    },
+    {
+      "path": "par5-sec3.md",
+      "num": 5,
+      "icon": "📖",
+      "matIcon": "menu_book",
+      "badge": "المحاضرة ٥ — جزء ٣"
+    },
+    {
+      "path": "par6.md",
+      "num": 6,
+      "icon": "💻",
+      "matIcon": "code"
+    },
+    {
+      "path": "par7-sec1.md",
+      "num": 7,
+      "icon": "🎯",
+      "matIcon": "quiz",
+      "badge": "المحاضرة ٧ — جزء ١"
+    },
+    {
+      "path": "par7-sec2.md",
+      "num": 7,
+      "icon": "📝",
+      "matIcon": "description",
+      "badge": "المحاضرة ٧ — جزء ٢"
+    },
+    {
+      "path": "par7-sec5.md",
+      "num": 7,
+      "icon": "📖",
+      "matIcon": "menu_book",
+      "badge": "المحاضرة ٧ — جزء ٥"
+    },
+    {
+      "path": "par7-sec6.md",
+      "num": 7,
+      "icon": "💻",
+      "matIcon": "code",
+      "badge": "المحاضرة ٧ — جزء ٦"
+    },
+    {
+      "path": "par7-sec7.md",
+      "num": 7,
+      "icon": "🎯",
+      "matIcon": "quiz",
+      "badge": "المحاضرة ٧ — جزء ٧"
+    }
+  ],
   "lectureIcons": [
     "📌",
     "📖",
