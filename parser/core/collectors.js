@@ -34,6 +34,7 @@ export function collectDollarMath(lines, start) {
 export function collectBlockquote(lines, start) {
   const parts = [];
   let i = start;
+  while (i < lines.length && !lines[i].trim()) i++;
   while (i < lines.length && /^> ?/.test(lines[i])) {
     parts.push(lines[i].replace(/^> ?/, ''));
     i++;

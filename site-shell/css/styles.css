@@ -2990,6 +2990,46 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
   font-size: 0.9375rem; line-height: 1.65; color: var(--color-on-surface-variant);
 }
 
+.dark .think-prompt {
+  border-color: color-mix(in srgb, var(--color-secondary-accent) 35%, var(--dm-border));
+  background: color-mix(in srgb, var(--color-secondary) 10%, var(--dm-elevated));
+}
+
+.dark .think-prompt__label {
+  color: var(--dm-text);
+}
+
+.dark .think-prompt__body {
+  color: var(--dm-text-muted);
+}
+
+.dark .imports-block {
+  border-color: color-mix(in srgb, var(--color-secondary-accent) 30%, var(--dm-border));
+  background: color-mix(in srgb, var(--color-secondary) 8%, var(--dm-elevated));
+}
+
+.dark .imports-block__head {
+  background: color-mix(in srgb, var(--color-secondary) 12%, var(--dm-elevated-2));
+  border-bottom-color: var(--dm-border);
+}
+
+.dark .imports-block__label {
+  color: var(--dm-text);
+}
+
+.dark .imports-block__body {
+  color: var(--dm-text-muted);
+}
+
+.dark .expected-output {
+  border-color: var(--dm-border);
+}
+
+.dark .expected-output__head {
+  background: var(--dm-elevated-2);
+  color: var(--dm-text);
+}
+
 .qa-card {
   border: 1px solid var(--color-outline-variant); border-radius: 0.875rem; overflow: hidden;
   background: var(--color-surface-container-lowest);
@@ -3031,6 +3071,106 @@ details[open] summary .acc-chevron { transform: rotate(180deg); }
 .qa-card__answer-text {
   flex: 1; font-size: 0.9375rem; line-height: 1.65;
   color: var(--color-on-surface-variant); margin: 0;
+}
+
+.dark .qa-card {
+  background: var(--dm-elevated);
+  border-color: var(--dm-border);
+}
+
+.dark .qa-card__toggle:hover {
+  background: var(--dm-elevated-2);
+}
+
+.dark .qa-card__question {
+  color: var(--dm-text);
+}
+
+.dark .qa-card__chevron {
+  color: var(--dm-text-muted);
+}
+
+.dark .qa-card__answer {
+  border-top-color: var(--dm-border);
+  background: color-mix(in srgb, var(--color-secondary) 12%, var(--dm-elevated-2));
+}
+
+.dark .qa-card__answer-text {
+  color: var(--dm-text-muted);
+}
+
+.dark .guide-block__title {
+  color: var(--dm-text);
+}
+
+.dark .guide-block__text,
+.dark .guide-block__list {
+  color: var(--dm-text-muted);
+}
+
+.dark .guide-block__text strong,
+.dark .guide-block__list strong,
+.dark .guide-block__text em,
+.dark .guide-block__list em {
+  color: var(--dm-text);
+}
+
+.dark .line-explain-tip {
+  background: var(--dm-elevated-2);
+  color: var(--dm-text);
+  border-color: var(--dm-border);
+}
+
+.dark .line-explain-tip__why {
+  color: var(--dm-text-muted);
+}
+
+.dark .roadmap-extra {
+  background: var(--dm-elevated);
+  border-color: var(--dm-border);
+}
+
+.dark .roadmap-extra__summary,
+.dark .roadmap-extra__chevron,
+.dark .roadmap-extra__hint,
+.dark .roadmap-extra__meta,
+.dark .roadmap-extra__role,
+.dark .roadmap-extra__diff,
+.dark .roadmap-extra__a-text,
+.dark .roadmap-extra__calls {
+  color: var(--dm-text-muted);
+}
+
+.dark .roadmap-extra__fn {
+  color: var(--dm-text);
+}
+
+.dark .roadmap-extra__item {
+  background: var(--dm-elevated-2);
+  border-color: var(--dm-border);
+}
+
+.dark .roadmap-extra__body {
+  border-top-color: var(--dm-border);
+}
+
+.dark .algorithm-step {
+  background: var(--dm-elevated) !important;
+  border-color: var(--dm-border) !important;
+}
+
+.dark .analogy-card {
+  background: color-mix(in srgb, var(--color-primary) 12%, var(--dm-elevated)) !important;
+  border-color: color-mix(in srgb, var(--color-primary) 35%, var(--dm-border));
+}
+
+.dark .analogy-card .font-body-md {
+  color: var(--dm-text-muted);
+}
+
+.dark .prose-content p,
+.dark .prose-content li {
+  color: var(--dm-text-muted);
 }
 
 .reference-part {

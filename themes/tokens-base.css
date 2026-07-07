@@ -228,6 +228,12 @@
   --dm-text: var(--palette-dm-text);
   --dm-text-muted: var(--palette-dm-text-muted);
 
+  /* Remap light-mode text/surface tokens so custom CSS (not only Tailwind) reads correctly */
+  --color-on-surface: var(--palette-dm-text);
+  --color-on-surface-variant: var(--palette-dm-text-muted);
+  --color-on-background: var(--palette-dm-text);
+  --color-surface-container-lowest: var(--palette-dm-elevated);
+
   --color-primary: var(--palette-primary-bright);
   --color-inverse-primary: var(--palette-primary-bright);
 
