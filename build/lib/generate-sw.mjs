@@ -43,6 +43,7 @@ export async function generateServiceWorker(outDir, { buildId, cachePrefix }) {
     './',
     './index.html',
     './js/app.js',
+    './js/analytics.js',
     './js/lecture-routing.js',
     './js/equations.js',
     './js/guide-config.js',

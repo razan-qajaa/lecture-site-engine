@@ -9,6 +9,13 @@ import {
   resolveLectureHash,
   hashPointsToSection,
 } from './lecture-routing.js';
+import {
+  initAnalytics,
+  trackHomeView,
+  trackLectureView,
+  trackLectureContentReady,
+  updateAnalyticsContext,
+} from './analytics.js';
 
 const STORAGE_THEME = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-theme`;
 const STORAGE_LAST_LECTURE = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-last-lecture`;
@@ -21,7 +28,7 @@ const LECTURE_WIDTH_OPTIONS = [
   { value: '150', label: '150%', body: '100%', padInline: 'var(--lecture-pad-sm)', mainMax: 'none' },
   { value: 'fill', label: 'ملء', expand: true },
 ];
-const DEFAULT_LECTURE_WIDTH = '50';
+const DEFAULT_LECTURE_WIDTH = '120';
 
 const {
   renderLecture,
@@ -122,11 +129,24 @@ function initTheme() {
 
 const HUB_HOME_URL = '../../index.html';
 
+let currentView = 'home';
+
 function goToHubHome() {
   window.location.href = HUB_HOME_URL;
 }
 
+function goToSubjectHome() {
+  location.hash = 'home';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function handleBrandClick() {
+  if (currentView === 'lecture') goToSubjectHome();
+  else goToHubHome();
+}
+
 function showView(name) {
+  currentView = name;
   document.getElementById('homeView')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureView')?.classList.toggle('hidden', name !== 'lecture');
   document.getElementById('backToHomeBtn')?.classList.toggle('hidden', name === 'home');
@@ -134,6 +154,12 @@ function showView(name) {
   document.getElementById('lectureWidthControl')?.classList.toggle('hidden', name !== 'lecture');
   document.getElementById('mobileStudyBar')?.classList.toggle('hidden', name !== 'lecture');
   document.documentElement.classList.toggle('is-lecture-view', name === 'lecture');
+  const brandBtn = document.getElementById('brandBtn');
+  if (brandBtn) {
+    brandBtn.title = name === 'lecture'
+      ? 'العودة لقائمة المحاضرات'
+      : 'العودة للسنوات الدراسية';
+  }
   if (name !== 'lecture') closeMobileToc();
 }
 
@@ -481,6 +507,7 @@ function mountLectureHtml(item, html) {
   requestAnimationFrame(() => {
     revealLectureDetailSections(document.getElementById('content'));
     refreshLectureVisibility(document.getElementById('content'));
+    trackLectureContentReady();
   });
 }
 
@@ -547,6 +574,9 @@ async function loadLectureView(idx, hashPart) {
   if (needsRender) scrollAfterLectureLoad(hashPart, item);
   else if (hashPointsToSection(hashPart, item)) scrollToAnchor(hashPart);
     else window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  trackLectureView(item);
+  if (!needsRender) trackLectureContentReady();
 }
 
 function jumpToSummary() {
@@ -708,6 +738,7 @@ function resolveRoute() {
   } else {
     currentLectureIndex = -1;
     showView('home');
+    trackHomeView();
     if (hash === 'home' || !hash) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
@@ -727,12 +758,9 @@ async function init() {
   bindJumpSummaryClicks();
   initLectureWidthToggle();
   initMobileStudyUi();
-  document.getElementById('backToHomeBtn')?.addEventListener('click', () => {
-    location.hash = 'home';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  document.getElementById('backToHomeBtn')?.addEventListener('click', goToSubjectHome);
   document.getElementById('backToHubBtn')?.addEventListener('click', goToHubHome);
-  document.getElementById('brandBtn')?.addEventListener('click', goToHubHome);
+  document.getElementById('brandBtn')?.addEventListener('click', handleBrandClick);
   window.addEventListener('hashchange', resolveRoute);
 
   try {
@@ -742,6 +770,12 @@ async function init() {
 
     applySiteSettings(manifest, { guideConfig: GUIDE_CONFIG, basePath: 'themes/' });
     siteTitle = manifest.settings?.subjectName || manifest.title || GUIDE_CONFIG.defaultTitle;
+
+    initAnalytics({
+      subjectName: siteTitle,
+      storagePrefix: GUIDE_CONFIG.storagePrefix || 'study-guide',
+    });
+    updateAnalyticsContext({ subjectName: siteTitle });
 
     const files = manifest.files || [];
 
