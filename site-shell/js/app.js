@@ -16,10 +16,15 @@ import {
   trackLectureContentReady,
   updateAnalyticsContext,
 } from './analytics.js';
+import { initLaserPointer } from './laser-pointer.js';
+
+/** Set true when lecture notes localStorage behaviour is ready. */
+const LECTURE_NOTES_ENABLED = false;
 
 const STORAGE_THEME = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-theme`;
 const STORAGE_LAST_LECTURE = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-last-lecture`;
 const STORAGE_LECTURE_WIDTH = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-lecture-width`;
+const STORAGE_NOTES_PREFIX = `${GUIDE_CONFIG.storagePrefix || 'study-guide'}-notes`;
 const LECTURE_WIDTH_OPTIONS = [
   { value: '50', label: '50%', body: '50%' },
   { value: '70', label: '70%', body: '70%' },
@@ -35,6 +40,7 @@ const LEGACY_DEFAULT_WIDTHS = new Set(['30', '50', '70', '100']);
 
 const {
   renderLecture,
+  renderReview,
   buildTocData,
   initInteractivity,
   setRefContext,
@@ -49,9 +55,12 @@ const SCROLL_OFFSET_PX = 64;
 let appState = {
   manifest: null,
   items: [],
+  reviewManifest: null,
+  reviewItems: [],
 };
 let siteTitle = "";
 let currentLectureIndex = -1;
+let currentReviewIndex = -1;
 let routeLock = false;
 let scrollAnimObserver = null;
 let sidebarObserver = null;
@@ -81,6 +90,168 @@ function htmlCacheKey(item) {
 
 function esc(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function escAttr(s) {
+  return esc(s).replace(/"/g, '&quot;');
+}
+
+async function loadReviewManifest() {
+  const res = await fetch(versionedUrl('reviews/manifest.json'), { cache: 'no-store' });
+  if (!res.ok) return null;
+  return res.json();
+}
+
+async function loadReviewJson(path) {
+  const res = await fetch(versionedUrl(`reviews/${path}`), { cache: 'no-store' });
+  if (!res.ok) throw new Error(`تعذّر تحميل ${path}`);
+  return res.json();
+}
+
+function reviewFromJson(data, fileId) {
+  const review = data.review || data.lectures?.[0] || data;
+  if (fileId && review && !review.id) review.id = fileId;
+  return review;
+}
+
+function getReviewIndexFromHash(hash) {
+  if (!hash || hash === 'home') return -1;
+  let idx = appState.reviewItems.findIndex(it => it.review.id === hash);
+  if (idx >= 0) return idx;
+  return appState.reviewItems.findIndex(it => hash.startsWith(`${it.review.id}-`));
+}
+
+function reviewStats(review) {
+  const codeBlocks = review.parts?.reduce((n, p) => {
+    return n + (p.blocks?.filter(b => b.type === 'code').length || 0);
+  }, 0) || 0;
+  return { sections: review.parts?.length || 0, codeBlocks };
+}
+
+function renderReviewFeatured() {
+  const section = document.getElementById('reviewFeatured');
+  if (!section) return;
+
+  if (!appState.reviewItems.length) {
+    section.classList.add('hidden');
+    section.innerHTML = '';
+    return;
+  }
+
+  section.classList.remove('hidden');
+  const item = appState.reviewItems[0];
+  const stats = reviewStats(item.review);
+
+  section.innerHTML = `
+    <button type="button" id="reviewFeaturedBtn"
+      class="lecture-picker-card group text-right w-full bg-gradient-to-l from-secondary-container/40 to-primary-container/30 border-2 border-primary/30 rounded-2xl p-xl custom-shadow box-hover"
+      aria-label="فتح ${escAttr(item.review.title)}">
+      <div class="flex flex-col md:flex-row md:items-center gap-lg">
+        <div class="picker-icon-wrap w-20 h-20 rounded-2xl bg-primary flex items-center justify-center text-on-primary shrink-0 mx-auto md:mx-0">
+          ${ms(item.matIcon, true, 'text-4xl')}
+        </div>
+        <div class="flex-1 text-center md:text-right">
+          <span class="inline-block px-md py-xs bg-primary text-on-primary rounded-full font-label-md text-label-md mb-sm">📚 مراجعة شاملة</span>
+          <h2 class="font-headline-lg text-headline-lg text-primary dark:text-inverse-primary mb-sm">${esc(item.review.title)}</h2>
+          <p class="font-body-md text-on-surface-variant mb-md">${esc(item.review.tag || appState.reviewManifest?.subtitle || '')}</p>
+          <div class="flex flex-wrap justify-center md:justify-start gap-sm mb-md">
+            <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
+              ${ms('layers', false, 'text-sm text-primary')} ${stats.sections} قسم
+            </span>
+            <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
+              ${ms('terminal', false, 'text-sm text-secondary')} ${stats.codeBlocks} أكواد
+            </span>
+            <span class="inline-flex items-center gap-xs px-sm py-xs bg-surface-container-high rounded-full font-label-md text-label-md text-on-surface-variant">
+              ${ms('trending_up', false, 'text-sm text-tertiary')} من الأسهل للأصعب
+            </span>
+          </div>
+          <span class="inline-flex items-center gap-sm text-primary font-label-md font-bold group-hover:gap-md transition-all">
+            ابدأ المراجعة ${ms('arrow_back', false, 'text-lg')}
+          </span>
+        </div>
+      </div>
+    </button>`;
+
+  document.getElementById('reviewFeaturedBtn')?.addEventListener('click', () => {
+    const id = appState.reviewItems[0]?.review.id;
+    if (id) location.hash = id;
+  });
+}
+
+function setJumpQuizVisible(show) {
+  document.getElementById('jumpQuizBtn')?.closest('.p-lg')?.classList.toggle('hidden', !show);
+  document.getElementById('mobileJumpQuizBtn')?.closest('.mobile-toc-drawer__foot')?.classList.toggle('hidden', !show);
+  document.getElementById('mobileStudyQuizBtn')?.classList.toggle('hidden', !show);
+}
+
+function mountReviewHtml(item, html) {
+  document.getElementById('content').innerHTML = html;
+  showView('lecture');
+  initInteractivity(document.getElementById('content'));
+  initDiagrams(document.getElementById('content'));
+  initEquations(document.getElementById('content'));
+  if (window.hljs) document.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+  buildSidebar(item.toc);
+  initScrollAnimations(document.getElementById('content'));
+  revealLectureDetailSections(document.getElementById('content'));
+  requestAnimationFrame(() => {
+    revealLectureDetailSections(document.getElementById('content'));
+    refreshLectureVisibility(document.getElementById('content'));
+  });
+}
+
+function loadReviewView(index, anchorHash) {
+  const item = appState.reviewItems[index];
+  if (!item) return;
+
+  currentLectureIndex = -1;
+  showView('lecture');
+  setJumpQuizVisible(false);
+
+  const needsRender = currentReviewIndex !== index || !document.getElementById(item.review.id);
+
+  if (needsRender) {
+    currentReviewIndex = index;
+    mountReviewHtml(item, renderReview(item.review, item.icon));
+
+    document.getElementById('sidebarCourseTitle').textContent = shortLectureTitle(item.review.title);
+    document.getElementById('sidebarCourseSub').textContent = item.review.tag || '';
+    document.getElementById('sidebarMatIcon').textContent = item.matIcon || 'menu_book';
+    document.getElementById('mobileTocCourseTitle').textContent = shortLectureTitle(item.review.title);
+    document.getElementById('mobileTocCourseSub').textContent = item.review.tag || '';
+    document.getElementById('mobileTocMatIcon').textContent = item.matIcon || 'menu_book';
+  } else {
+    buildSidebar(item.toc);
+    showView('lecture');
+  }
+
+  const hash = anchorHash && anchorHash !== item.review.id ? anchorHash : item.review.id;
+  routeLock = true;
+  if (location.hash !== `#${hash}`) location.hash = hash;
+  routeLock = false;
+
+  if (anchorHash && anchorHash !== item.review.id) scrollToAnchor(anchorHash);
+  else if (needsRender) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+async function loadReviews() {
+  const reviewManifest = await loadReviewManifest();
+  if (!reviewManifest?.files?.length) return;
+
+  appState.reviewManifest = reviewManifest;
+  for (const file of reviewManifest.files) {
+    const path = typeof file === 'string' ? file : file.path;
+    if (!path) continue;
+    const data = await loadReviewJson(path);
+    const review = reviewFromJson(data, file.id);
+    if (!review?.parts?.length) continue;
+    appState.reviewItems.push({
+      review,
+      icon: file.icon || '📚',
+      matIcon: file.matIcon || 'menu_book',
+      toc: buildTocData([review])[0],
+    });
+  }
 }
 
 function lectureStats(lec) {
@@ -155,6 +326,7 @@ function showView(name) {
   document.getElementById('backToHomeBtn')?.classList.toggle('hidden', name === 'home');
   document.getElementById('backToHubBtn')?.classList.toggle('hidden', name !== 'home');
   document.getElementById('lectureWidthControl')?.classList.toggle('hidden', name !== 'lecture');
+  document.getElementById('lectureNotesBtn')?.classList.toggle('hidden', !LECTURE_NOTES_ENABLED || name !== 'lecture');
   document.getElementById('mobileStudyBar')?.classList.toggle('hidden', name !== 'lecture');
   document.documentElement.classList.toggle('is-lecture-view', name === 'lecture');
   const brandBtn = document.getElementById('brandBtn');
@@ -529,6 +701,7 @@ async function loadLectureView(idx, hashPart) {
   const stub = appState.items[idx];
   if (!stub) return;
 
+  currentReviewIndex = -1;
   showLectureLoading();
 
   let item;
@@ -545,6 +718,7 @@ async function loadLectureView(idx, hashPart) {
 
   const needsRender = currentLectureIndex !== idx || !document.getElementById(item.lec.id);
   currentLectureIndex = idx;
+  setJumpQuizVisible(!!item.lec.parts?.find(p => p.type === 'mcq'));
   localStorage.setItem(STORAGE_LAST_LECTURE, String(idx));
 
   if (needsRender) {
@@ -580,6 +754,7 @@ async function loadLectureView(idx, hashPart) {
 
   trackLectureView(item);
   if (!needsRender) trackLectureContentReady();
+  if (LECTURE_NOTES_ENABLED) loadLectureNotes();
 }
 
 function jumpToSummary() {
@@ -732,6 +907,74 @@ function initMobileStudyUi() {
   });
 }
 
+function lectureNotesStorageKey() {
+  const hash = anchorIdFromHash(location.hash) || 'home';
+  return `${STORAGE_NOTES_PREFIX}:${location.pathname}#${hash}`;
+}
+
+function loadLectureNotes() {
+  const textarea = document.getElementById('lectureNotesInput');
+  if (!textarea) return;
+  try {
+    textarea.value = localStorage.getItem(lectureNotesStorageKey()) || '';
+  } catch {
+    textarea.value = '';
+  }
+}
+
+function saveLectureNotes() {
+  const textarea = document.getElementById('lectureNotesInput');
+  if (!textarea) return;
+  try {
+    localStorage.setItem(lectureNotesStorageKey(), textarea.value);
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
+function openLectureNotesModal() {
+  const modal = document.getElementById('lectureNotesModal');
+  const textarea = document.getElementById('lectureNotesInput');
+  if (!modal || !textarea) return;
+  loadLectureNotes();
+  modal.classList.remove('hidden');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  textarea.focus();
+}
+
+function closeLectureNotesModal() {
+  const modal = document.getElementById('lectureNotesModal');
+  if (!modal) return;
+  saveLectureNotes();
+  modal.classList.add('hidden');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+function initLectureNotes() {
+  const openBtn = document.getElementById('lectureNotesBtn');
+  const closeBtn = document.getElementById('lectureNotesClose');
+  const textarea = document.getElementById('lectureNotesInput');
+  const modal = document.getElementById('lectureNotesModal');
+  if (!openBtn || !textarea || !modal || openBtn.dataset.bound === '1') return;
+  openBtn.dataset.bound = '1';
+
+  let saveTimer = null;
+  openBtn.addEventListener('click', openLectureNotesModal);
+  closeBtn?.addEventListener('click', closeLectureNotesModal);
+  modal.querySelectorAll('[data-close-notes]').forEach(el => {
+    el.addEventListener('click', closeLectureNotesModal);
+  });
+  textarea.addEventListener('input', () => {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveLectureNotes, 300);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeLectureNotesModal();
+  });
+}
+
 function initScrollFab() {
   const fab = document.getElementById('scrollTopFab');
   if (!fab) return;
@@ -746,11 +989,19 @@ function initScrollFab() {
 function resolveRoute() {
   if (routeLock) return;
   const hash = anchorIdFromHash(location.hash);
+
+  const reviewIdx = getReviewIndexFromHash(hash);
+  if (reviewIdx >= 0) {
+    loadReviewView(reviewIdx, hash);
+    return;
+  }
+
   const idx = getLectureIndexFromHash(hash, appState.items);
   if (idx >= 0) {
     loadLectureView(idx, hash).catch(err => console.error(err));
   } else {
     currentLectureIndex = -1;
+    currentReviewIndex = -1;
     showView('home');
     trackHomeView();
     if (hash === 'home' || !hash) window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -766,11 +1017,13 @@ function initServiceWorker() {
 
 async function init() {
   initTheme();
+  initLaserPointer();
   initInteractivity();
   initScrollFab();
   initJumpSummary();
   bindJumpSummaryClicks();
   initLectureWidthToggle();
+  if (LECTURE_NOTES_ENABLED) initLectureNotes();
   initMobileStudyUi();
   document.getElementById('backToHomeBtn')?.addEventListener('click', goToSubjectHome);
   document.getElementById('backToHubBtn')?.addEventListener('click', goToHubHome);
@@ -805,6 +1058,13 @@ async function init() {
     } else {
       renderHomeGrid();
     }
+
+    try {
+      await loadReviews();
+    } catch (reviewErr) {
+      console.warn('Review guides not loaded:', reviewErr);
+    }
+    renderReviewFeatured();
 
     resolveRoute();
   } catch (err) {

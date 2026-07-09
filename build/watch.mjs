@@ -40,17 +40,29 @@ function debounce(fn, ms) {
   };
 }
 
-async function build(all, subject) {
+async function refreshHub() {
+  await run(process.execPath, ['build/generate-dist-index.mjs']);
+}
+
+/** @param {boolean} hubOnly — skip subject rebuild (hub generator changed) */
+async function build(all, subject, hubOnly = false) {
   try {
-    if (all) {
+    if (hubOnly) {
+      await refreshHub();
+    } else if (all) {
       await run(process.execPath, ['build/deploy-build.mjs', '--all']);
     } else {
       await run(process.execPath, ['build/cli.mjs', '--subject', subject]);
+      await refreshHub();
     }
     console.log('✓ rebuilt — waiting for changes...\n');
   } catch (err) {
     console.error(`✗ build failed: ${err.message}\n`);
   }
+}
+
+function isHubGeneratorChange(filename) {
+  return filename && path.basename(filename) === 'generate-dist-index.mjs';
 }
 
 async function main() {
@@ -69,7 +81,9 @@ async function main() {
 
   await build(all, subject);
 
-  const rebuild = debounce(() => build(all, subject), 250);
+  const rebuild = debounce((filename) => {
+    build(all, subject, isHubGeneratorChange(filename));
+  }, 250);
 
   const watchDirs = all
     ? [
@@ -77,19 +91,21 @@ async function main() {
       path.join(ENGINE_ROOT, 'site-shell'),
       path.join(ENGINE_ROOT, 'renderer'),
       path.join(ENGINE_ROOT, 'themes'),
+      path.join(ENGINE_ROOT, 'build'),
     ]
     : [
       path.join(ENGINE_ROOT, 'subjects', subjectRel),
       path.join(ENGINE_ROOT, 'site-shell'),
       path.join(ENGINE_ROOT, 'renderer'),
       path.join(ENGINE_ROOT, 'themes'),
+      path.join(ENGINE_ROOT, 'build'),
     ];
 
   for (const dir of watchDirs) {
     try {
       watch(dir, { recursive: true }, (_event, filename) => {
         console.log(`↻ change detected: ${filename || dir}`);
-        rebuild();
+        rebuild(filename);
       });
       console.log(`watching ${path.relative(ENGINE_ROOT, dir)}`);
     } catch (err) {

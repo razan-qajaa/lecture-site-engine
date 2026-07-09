@@ -9,7 +9,15 @@
   },
   "title": "برمجة شرطية(ذكاء اصطناعي) — Conditional Programming (AI)",
   "subtitle": "عصبونات + تعلم + خوارزميات + عمق",
-  "files": [],
+  "files": [
+    {
+      "path": "par6.md",
+      "num": 6,
+      "icon": "📌",
+      "matIcon": "school",
+      "badge": "المحاضرة ٦"
+    }
+  ],
   "lectureIcons": [
     "📌",
     "📖",
