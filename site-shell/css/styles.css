@@ -1780,6 +1780,20 @@ html.is-lecture-view .site-navbar__actions {
 
 body.laser-pointer-enabled {
   cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.laser-pointer-enabled * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body.laser-pointer-enabled input,
+body.laser-pointer-enabled textarea {
+  user-select: text;
+  -webkit-user-select: text;
+  cursor: text;
 }
 
 body.laser-pointer-enabled a,
