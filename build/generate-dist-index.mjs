@@ -171,6 +171,7 @@ async function collectHubSubjects() {
     let theme = inferTheme(subjectId, domain);
     let matIcon = HUB_THEME_PALETTE[theme]?.icon || 'school';
     let enabledLectures = false;
+    let hubTag = '';
     const manifestSrc = path.join(lecturesDir, 'manifest.json');
     if (existsSync(manifestSrc)) {
       try {
@@ -179,6 +180,7 @@ async function collectHubSubjects() {
         subtitle = m.subtitle || subtitle;
         year = m.settings?.year || '';
         enabledLectures = m.settings?.enabledLectures || false;
+        hubTag = m.settings?.hubTag || '';
         academicYear = m.settings?.academicYear ?? academicYear;
         theme = m.settings?.theme || theme;
         matIcon = m.lectureMatIcons?.[0]
@@ -194,7 +196,7 @@ async function collectHubSubjects() {
     if(enabledLectures)
     {
       items.push({
-      rel, title, subtitle, year, academicYear, hasLectures, lectureCount, theme, matIcon,
+      rel, title, subtitle, year, academicYear, hasLectures, lectureCount, theme, matIcon, hubTag,
     });
     }
   }
@@ -281,8 +283,13 @@ function renderSubjectCard(s, year, staggerIdx) {
   const countLabel = lectureCountLabel(s.lectureCount);
   const palette = HUB_THEME_PALETTE[s.theme] || HUB_THEME_PALETTE['amber-default'];
   const stagger = (staggerIdx * 0.07).toFixed(2);
+  const tagHtml = s.hubTag
+    ? `<span class="hub-card-wrap__tag">${escapeHtml(s.hubTag)}</span>`
+    : '';
 
   return `
+    <div class="hub-card-wrap">
+      ${tagHtml}
       <a class="hub-card${pending ? ' hub-card--pending' : ''}" href="./${s.rel}/"
        data-progress-subject="${escapeHtml(s.rel)}" data-progress-total="${s.lectureCount}" data-progress-year="${year}"
          style="--card-primary:${palette.primary};--card-secondary:${palette.secondary};--card-tertiary:${palette.tertiary};--card-fixed:${palette.fixed};--card-on-fixed:${palette.onFixed};--stagger:${stagger}s"
@@ -310,7 +317,8 @@ function renderSubjectCard(s, year, staggerIdx) {
           ${pending ? 'عرض المادة' : 'فتح الدليل'}
           <span class="material-symbols-outlined">arrow_back</span>
         </span>
-      </a>`;
+      </a>
+    </div>`;
 }
 
 /** @param {Awaited<ReturnType<typeof collectHubSubjects>>} subjects */
@@ -719,6 +727,29 @@ function renderHtml(subjects) {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 1.25rem;
+    }
+    .hub-card-wrap {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+    .hub-card-wrap__tag {
+      align-self: flex-start;
+      padding: 0.2rem 0.65rem;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #b45309;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      border: 1px solid #fcd34d;
+      line-height: 1.4;
+    }
+    .dark .hub-card-wrap__tag {
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+      border-color: rgba(251, 191, 36, 0.35);
     }
     .hub-card {
       position: relative;
