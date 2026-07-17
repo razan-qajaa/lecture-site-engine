@@ -137,13 +137,13 @@ function getReviewIndexFromHash(hash) {
 }
 
 async function loadExamManifest() {
-  const res = await fetch(versionedUrl('exams/manifest.json'), { cache: 'no-store' });
+  const res = await fetch(versionedUrl('DAWRAT/manifest.json'), { cache: 'no-store' });
   if (!res.ok) return null;
   return res.json();
 }
 
 async function loadExamJson(path) {
-  const res = await fetch(versionedUrl(`exams/${path}`), { cache: 'no-store' });
+  const res = await fetch(versionedUrl(`DAWRAT/${path}`), { cache: 'no-store' });
   if (!res.ok) throw new Error(`تعذّر تحميل ${path}`);
   return res.json();
 }

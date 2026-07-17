@@ -68,13 +68,15 @@ async function validateSubject(subjectDir, parser) {
     } catch (err) {
       issues.push({ severity: 'error', line: 1, message: `parse failed: ${err.message}` });
     }
-    if (issues.length) {
-      const errors = issues.filter(i => i.severity === 'error');
+    // Warnings are counted but not printed — too noisy during builds.
+    const errors = issues.filter(i => i.severity === 'error');
+    if (errors.length) {
       errorCount += errors.length;
       console.error(`✗ ${rel}: ${errors.length} error(s), ${issues.length - errors.length} warning(s)`);
-      for (const i of issues) console.error(`  L${i.line} ${i.severity}: ${i.message}`);
+      for (const i of errors) console.error(`  L${i.line} ${i.severity}: ${i.message}`);
     } else {
-      console.log(`✓ ${rel}`);
+      const warnNote = issues.length ? ` (${issues.length} warning(s) hidden)` : '';
+      console.log(`✓ ${rel}${warnNote}`);
     }
   }
   if (errorCount) throw new Error(`Validation failed with ${errorCount} error(s)`);
@@ -152,9 +154,9 @@ async function buildExamsJson(subjectDir, examsOut, parser) {
     if (!srcPath) continue;
 
     if (/\.md$/i.test(srcPath)) {
-      const mdPath = path.join(subjectDir, 'exams', srcPath);
+      const mdPath = path.join(subjectDir, 'DAWRAT', srcPath);
       if (!existsSync(mdPath)) {
-        console.warn(`  exam source missing: exams/${srcPath}`);
+        console.warn(`  exam source missing: DAWRAT/${srcPath}`);
         continue;
       }
       const md = await readFile(mdPath, 'utf8');
@@ -177,7 +179,7 @@ async function buildExamsJson(subjectDir, examsOut, parser) {
         }, null, 2),
       );
       updatedFiles.push({ ...entry, path: jsonName, source: srcPath, parsedAt });
-      console.log(`  parsed → exams/${jsonName}`);
+      console.log(`  parsed → DAWRAT/${jsonName}`);
     } else {
       updatedFiles.push(entry);
     }
@@ -251,9 +253,9 @@ async function main() {
     await buildReviewJson(subjectDir, reviewsOut, parser);
   }
 
-  const examsSrc = path.join(subjectDir, 'exams');
+  const examsSrc = path.join(subjectDir, 'DAWRAT');
   if (existsSync(examsSrc)) {
-    const examsOut = path.join(outDir, 'exams');
+    const examsOut = path.join(outDir, 'DAWRAT');
     await cp(examsSrc, examsOut, { recursive: true });
     await buildExamsJson(subjectDir, examsOut, parser);
   }
