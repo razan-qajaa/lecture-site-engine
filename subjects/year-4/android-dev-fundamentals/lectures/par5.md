@@ -1449,14 +1449,15 @@ edges:
 
 ## الجزء الثالث: أسئلة اختيار من متعدد (MCQ)
 
-**Q1 [Comparison]:** Which callback is invoked only once during the entire life of an Activity instance under normal circumstances?
+### السؤال 1 (متوسط)
+Which callback is invoked only once during the entire life of an Activity instance under normal circumstances?
 أ) `onStart()`
 ب) `onCreate()`
 ج) `onResume()`
 د) `onRestart()`
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: `onStart()` قد تُستدعى عدة مرات كلما عاد النشاط من `Stopped`.
 - ب) صحيح: `onCreate()` تُستدعى مرة واحدة فقط عند إنشاء النشاط لأول مرة (باستثناء إعادة الإنشاء الكاملة).
 - ج) خطأ: `onResume()` تتكرر مع كل عودة من `Paused`.
@@ -1464,14 +1465,15 @@ edges:
 
 ---
 
-**Q2 [Code Scenario]:** What happens if you call `setData()` then `setType()` on the same Intent?
+### السؤال 2 (صعب)
+What happens if you call `setData()` then `setType()` on the same Intent?
 أ) كلاهما يُحفظان معاً بدون مشاكل
 ب) القيمة الثانية تمسح الأولى
 ج) يحدث خطأ في وقت الترجمة (compile error)
 د) `setType()` تُتجاهل تلقائياً
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا بالضبط ما يجب تجنّبه؛ إحداهما تمسح الأخرى.
 - ب) صحيح: استدعاء `setData()` ثم `setType()` (أو العكس) يمسح القيمة الأولى؛ لهذا يُستخدم `setDataAndType()`.
 - ج) خطأ: لا يوجد خطأ ترجمة، المشكلة منطقية فقط وقت التشغيل.
@@ -1479,14 +1481,15 @@ edges:
 
 ---
 
-**Q3 [Application]:** An activity has NO `<intent-filter>` declared in the manifest. How can it still be started?
+### السؤال 3 (متوسط)
+An activity has NO `<intent-filter>` declared in the manifest. How can it still be started?
 أ) لا يمكن تشغيله إطلاقاً
 ب) فقط عبر Implicit Intent
 ج) فقط عبر Explicit Intent
 د) عبر أي نوع Intent بدون قيود
 
 **الإجابة الصحيحة: ج**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: يمكن تشغيله لكن بطريقة محددة فقط.
 - ب) خطأ: بدون فلتر، لا يوجد شيء ليطابقه Implicit Intent.
 - ج) صحيح: النص صرّح أن الأنشطة بدون فلاتر تُشغَّل فقط عبر Intent صريح.
@@ -1494,14 +1497,15 @@ edges:
 
 ---
 
-**Q4 [Comparison]:** Which is TRUE about `onPause()` versus `onStop()`?
+### السؤال 4 (متوسط)
+Which is TRUE about `onPause()` versus `onStop()`?
 أ) كلاهما مناسبان لحفظ البيانات في قاعدة بيانات
 ب) `onPause()` مناسبة لعمليات ثقيلة، `onStop()` للعمليات الخفيفة
 ج) `onPause()` للعمليات الخفيفة، `onStop()` للعمليات الثقيلة نسبياً
 د) لا فرق عملي بينهما
 
 **الإجابة الصحيحة: ج**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: `onPause()` قد لا يوفر وقتاً كافياً لعمليات الحفظ الثقيلة.
 - ب) خطأ: هذا عكس القاعدة الصحيحة تماماً.
 - ج) صحيح: النص صريح في تحديد هذا التقسيم بالضبط.
@@ -1509,14 +1513,15 @@ edges:
 
 ---
 
-**Q5 [Code Scenario]:** What is the result of `Intent(this, SecondActivity::class.java)`?
+### السؤال 5 (صعب)
+What is the result of `Intent(this, SecondActivity::class.java)`?
 أ) Intent ضمني بدون مكوّن محدد
 ب) Intent صريح يستهدف SecondActivity مباشرة
 ج) خطأ لأن Intent لا يقبل صنفاً كمعامل
 د) Intent يطلب من النظام اختيار أي نشاط مناسب
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: تحديد `Class<T>` صراحة يجعله صريحاً بالتأكيد.
 - ب) صحيح: هذا هو الشكل القياسي لبناء Explicit Intent باستخدام Context وClass.
 - ج) خطأ: هذا Constructor صحيح ومدعوم رسمياً في Android API.
@@ -1524,14 +1529,15 @@ edges:
 
 ---
 
-**Q6 [Application]:** Which flag prevents an activity from being kept in the back stack?
+### السؤال 6 (متوسط)
+Which flag prevents an activity from being kept in the back stack?
 أ) `FLAG_DEBUG_LOG_RESOLUTION`
 ب) `FLAG_ACTIVITY_NO_HISTORY`
 ج) `CATEGORY_DEFAULT`
 د) `CATEGORY_LAUNCHER`
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا علم للتصحيح (debugging) وليس له علاقة بسجل التنقل.
 - ب) صحيح: النص يذكره صراحة كعلم يمنع بقاء النشاط في المكدس الخلفي.
 - ج) خطأ: هذه فئة (category) وليست علماً (flag).
@@ -1539,14 +1545,15 @@ edges:
 
 ---
 
-**Q7 [Comparison]:** What distinguishes the Action test from the Category test in Intent Resolution?
+### السؤال 7 (متوسط)
+What distinguishes the Action test from the Category test in Intent Resolution?
 أ) كلاهما يشترطان تطابق كل العناصر
 ب) الـ Action يكفيه تطابق واحد، الـ Category يشترط كل عناصر الـ Intent موجودة في الفلتر
 ج) الـ Action يشترط تطابق الكل، الـ Category يكفيه تطابق واحد
 د) لا يوجد اختبار Category أصلاً في Intent Resolution
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: منطق الاختبارين مختلف تماماً كما وضّح النص.
 - ب) صحيح: هذا بالضبط ما وضحته الفقرتان 34 و35.
 - ج) خطأ: هذا عكس القاعدة الصحيحة.
@@ -1554,14 +1561,15 @@ edges:
 
 ---
 
-**Q8 [Application]:** In the URI `content://com.example.project:200/folder/subfolder`, what happens if the `scheme` attribute is omitted from the filter's `<data>` element?
+### السؤال 8 (متوسط)
+In the URI `content://com.example.project:200/folder/subfolder`, what happens if the `scheme` attribute is omitted from the filter's `<data>` element?
 أ) لا شيء يتغيّر، تبقى كل الأجزاء الأخرى فعالة
 ب) يُتجاهل الـ host تلقائياً حتى لو كُتب
 ج) يُصبح المسار (path) إلزامياً
 د) يفشل التطبيق بالكامل عند التشغيل
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: التبعيات الخطية تعني أن غياب scheme يؤثر مباشرة على host.
 - ب) صحيح: هذا مذكور صراحة في القاعدة: "If a scheme is not specified, the host is ignored."
 - ج) خطأ: العكس هو الصحيح؛ يُتجاهل المسار إذا غاب كل من scheme وhost.
@@ -1569,14 +1577,15 @@ edges:
 
 ---
 
-**Q9 [Code Scenario]:** Which method call correctly initializes both a URI and a MIME type together without one overwriting the other?
+### السؤال 9 (صعب)
+Which method call correctly initializes both a URI and a MIME type together without one overwriting the other?
 أ) `setData()` ثم `setType()`
 ب) `setType()` ثم `setData()`
 ج) `setDataAndType()`
 د) `putExtra(Intent.EXTRA_TEXT, ...)`
 
 **الإجابة الصحيحة: ج**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: `setType()` بعدها تمسح ما وضعه `setData()`.
 - ب) خطأ: نفس المشكلة بالاتجاه المعاكس.
 - ج) صحيح: هذه الدالة مصممة خصيصاً لتعيين كليهما معاً بأمان.
@@ -1584,14 +1593,15 @@ edges:
 
 ---
 
-**Q10 [Comparison]:** Which pair is required together for an activity to appear in the system's app launcher?
+### السؤال 10 (متوسط)
+Which pair is required together for an activity to appear in the system's app launcher?
 أ) `ACTION_SEND` + `CATEGORY_DEFAULT`
 ب) `ACTION_MAIN` + `CATEGORY_LAUNCHER`
 ج) `ACTION_VIEW` + `CATEGORY_BROWSABLE`
 د) `ACTION_EDIT` + `CATEGORY_DEFAULT`
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا الزوج خاص بمشاركة البيانات وليس بظهور الأيقونة.
 - ب) صحيح: النص يذكر صراحة أن هذين يجب أن يقترنا معاً لظهور النشاط في المشغّل.
 - ج) خطأ: هذا الزوج خاص بفتح الروابط من المتصفح.
@@ -1599,14 +1609,15 @@ edges:
 
 ---
 
-**Q11 [Application]:** Why should heavy database save operations be avoided inside `onPause()`?
+### السؤال 11 (متوسط)
+Why should heavy database save operations be avoided inside `onPause()`?
 أ) لأن `onPause()` لا تُستدعى إلا نادراً
 ب) لأن الوقت المتاح في `onPause()` قد لا يكفي لإتمام العملية بأمان
 ج) لأن `onPause()` تعمل فقط في وضع النوافذ المتعددة
 د) لأن قواعد البيانات لا تعمل في `onPause()` تقنياً
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: على العكس، تُستدعى بشكل شائع جداً في كل مقاطعة.
 - ب) صحيح: هذا هو السبب المذكور صراحة في النص الأصلي.
 - ج) خطأ: `onPause()` تُستدعى في كل الحالات وليس فقط النوافذ المتعددة.
@@ -1614,14 +1625,15 @@ edges:
 
 ---
 
-**Q12 [Code Scenario]:** What is the effect of calling `addCategory(Intent.CATEGORY_BROWSABLE)` on an Intent?
+### السؤال 12 (صعب)
+What is the effect of calling `addCategory(Intent.CATEGORY_BROWSABLE)` on an Intent?
 أ) يمسح كل الفئات السابقة ويضع هذه فقط
 ب) يضيف هذه الفئة دون حذف الفئات الموجودة مسبقاً
 ج) يحوّل الـ Intent إلى Explicit تلقائياً
 د) يمنع الـ Intent من الوصول لأي فلتر
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا سلوك `setFlags()` وليس `addCategory()`.
 - ب) صحيح: `addCategory()` تُضيف فئة جديدة للقائمة الموجودة.
 - ج) خطأ: نوع الـ Intent (صريح/ضمني) يعتمد على وجود Component name وليس الفئات.
@@ -1629,14 +1641,15 @@ edges:
 
 ---
 
-**Q13 [Comparison]:** Which state can keep an activity partially visible while it is NOT in the foreground?
+### السؤال 13 (متوسط)
+Which state can keep an activity partially visible while it is NOT in the foreground?
 أ) `Created`
 ب) `Started`
 ج) `Paused`
 د) `Destroyed`
 
 **الإجابة الصحيحة: ج**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذه حالة الإنشاء الأولي، لا علاقة لها بالرؤية الجزئية.
 - ب) خطأ: هذه حالة انتقالية سريعة قبل التفاعل الكامل.
 - ج) صحيح: النص يذكر أن النشاط في `Paused` قد يبقى مرئياً جزئياً كما في وضع النوافذ المتعددة.
@@ -1644,14 +1657,15 @@ edges:
 
 ---
 
-**Q14 [Application]:** A developer wants to let the user pick which app handles a "share text" request, even if only one app matches. What should they use?
+### السؤال 14 (متوسط)
+A developer wants to let the user pick which app handles a "share text" request, even if only one app matches. What should they use?
 أ) `startActivity(intent)` مباشرة
 ب) `Intent.createChooser(intent, title)`
 ج) `addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)`
 د) `setDataAndType()`
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا قد يفتح تطبيقاً واحداً تلقائياً دون عرض قائمة اختيار.
 - ب) صحيح: `createChooser()` تجبر إظهار قائمة اختيار دائماً كما وضّح مثال البريد الإلكتروني.
 - ج) خطأ: هذا علم لا علاقة له بقائمة الاختيار.
@@ -1659,14 +1673,15 @@ edges:
 
 ---
 
-**Q15 [Code Scenario]:** Which lifecycle sequence correctly represents an activity being freshly launched?
+### السؤال 15 (صعب)
+Which lifecycle sequence correctly represents an activity being freshly launched?
 أ) `onResume() → onStart() → onCreate()`
 ب) `onCreate() → onStart() → onResume()`
 ج) `onStart() → onCreate() → onResume()`
 د) `onCreate() → onResume() → onStart()`
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: هذا ترتيب معكوس تماماً وغير ممكن.
 - ب) صحيح: هذا هو الترتيب الرسمي المذكور صراحة في النص الأصلي.
 - ج) خطأ: `onCreate()` يجب أن تكون أولاً دائماً.
@@ -1674,21 +1689,19 @@ edges:
 
 ---
 
-**Q16 [Application]:** Why must every component with an `<intent-filter>` explicitly set `android:exported`?
+### السؤال 16 (متوسط)
+Why must every component with an `<intent-filter>` explicitly set `android:exported`?
 أ) لتحسين سرعة تحميل التطبيق فقط
 ب) لتفادي الوصول غير المقصود من تطبيقات خارجية لأسباب أمنية
 ج) لأنها خاصية إلزامية لكل عنصر XML في أندرويد
 د) لتحديد لغة الواجهة المستخدمة
 
 **الإجابة الصحيحة: ب**
-**التعليل بالعربية:**
+**التعليل:**
 - أ) خطأ: لا علاقة مباشرة بسرعة التحميل.
 - ب) صحيح: هذا هو السبب الأمني المذكور صراحة في فقرة استقبال Implicit Intent.
 - ج) خطأ: هذه الخاصية مطلوبة فقط للمكوّنات التي تحتوي `<intent-filter>`.
 - د) خطأ: لا علاقة لها باللغة إطلاقاً.
-
----
-
 ## الجزء الرابع: أسئلة تصحيح الكود
 
 **Debug Q1 [syntax]:**
